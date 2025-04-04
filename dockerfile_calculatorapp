@@ -1,0 +1,10 @@
+FROM amazonlinux AS buildstage 
+RUN yum update && yum install -y go 
+ENV GO111MODULE=off
+WORKDIR /opt/calculatorapp
+COPY . .
+RUN go build calculator.go
+
+FROM scratch 
+COPY --from=buildstage /opt/calculatorapp/calculator /opt/calculatorapp/calculator
+ENTRYPOINT ["/opt/calculatorapp/calculator"]
