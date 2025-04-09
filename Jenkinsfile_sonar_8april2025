@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+	 tools {
+        maven 'Maven_3.9.9'
+    }
+
+
+    stages {
+	
+        stage('clone GIT repo') {
+            steps {
+                echo 'cloning code from github repo'
+				git branch: 'main', url: 'https://github.com/pranuthiruvva/mindcircuit15d.git'
+            }
+        }
+		   stage('sonarqube scan') {
+            steps {
+                echo 'scanning project'
+                sh 'ls -ltrh'
+                
+                sh ''' mvn sonar:sonar \\
+                      -Dsonar.host.url=http://ec2-3-81-1-19.compute-1.amazonaws.com:9000/ \\
+                      -Dsonar.login=squ_e8b7787f7f0692c7a3aae133fab4853ea692a6e4'''
+            }
+    	}
+		
+		
+		 stage('Build artifact') {
+            steps {
+                echo 'building artifact using maven build tool'
+				sh 'mvn clean install'
+            }
+        }
+		
+		
+		 stage('deploy to tomcat') {
+            steps {
+                echo 'deploying artifact on to tomcat'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://ec2-54-163-29-184.compute-1.amazonaws.com:8083/')], contextPath: 'devops-app', war: '**/*.war'
+            }
+        }
+    }
+}
