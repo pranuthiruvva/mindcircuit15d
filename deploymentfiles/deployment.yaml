@@ -26,6 +26,6 @@ spec:
     spec:
         containers:
         - name: fbcont1
-          image: pranuthi3811/pranuthi15d:mcfbpp
+          image: pranuthi3811/pranuthi15d:pytho_flaskapp
           ports:
             - containerPort: 8080
