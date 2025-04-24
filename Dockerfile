@@ -1,0 +1,11 @@
+FROM maven AS buildstage
+RUN mkdir /opt/mindcircuit15d
+WORKDIR /opt/mindcircuit15d
+COPY . .
+RUN mvn clean install
+
+FROM tomcat
+WORKDIR webapps
+COPY --from=buildstage /opt/mindcircuit15d/target/*.war .
+RUN rm -rf ROOT && *.war ROOT.war
+EXPOSE 8080
