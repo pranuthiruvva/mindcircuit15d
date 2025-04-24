@@ -7,5 +7,5 @@ RUN mvn clean install
 FROM tomcat
 WORKDIR webapps
 COPY --from=buildstage /opt/mindcircuit15d/target/*.war .
-RUN rm -rf ROOT && *.war ROOT.war
+RUN rm -rf ROOT && mv *.war ROOT.war
 EXPOSE 8080
